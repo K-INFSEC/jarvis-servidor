@@ -1,5 +1,5 @@
 import os
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Form
 from pydantic import BaseModel
 from google import genai
 from google.genai import types
@@ -20,11 +20,11 @@ client = genai.Client()
 class ChatRequest(BaseModel):
     message: str
 
-# Rota /chat (aceita POST)
+# Rota /chat (aceita POST com Form Data em vez de JSON para evitar erro de aspas do Render)
 @app.post("/chat")
-async def chat_endpoint(request: ChatRequest):
+async def chat_endpoint(message: str = Form(...)):
     try:
-        user_message = request.message
+        user_message = message
         print(f"Mensagem recebida do Android: {user_message}")
 
         # Configura as instruções do sistema (System Prompt)
