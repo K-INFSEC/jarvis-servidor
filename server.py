@@ -29,40 +29,40 @@ async def chat_endpoint(request: ChatRequest):
 
         # Configura as instruções do sistema (System Prompt)
         # e ajusta a criatividade através da temperatura.
-        # config = types.GenerateContentConfig(
-        #     system_instruction="Você é um assistente autônomo. Responda de forma concisa e natural.",
-        #     temperature=0.7,
-        # )
+        config = types.GenerateContentConfig(
+            system_instruction="Você é um assistente autônomo. Responda de forma concisa e natural.",
+            temperature=0.7,
+        )
 
         # Inicia a sessão de chat (recomendado para gerenciar histórico e permitir AFC - Automatic Function Calling)
-        # chat = client.chats.create(
-        #     model='gemini-3.8-flash',
-        #     config=config
-        # )
+        chat = client.chats.create(
+            model='gemini-3.8-flash',
+            config=config
+        )
 
-        # max_retries = 3
-        # retry_delay = 2 # segundos de espera entre as tentativas
-        # response = None
+        max_retries = 3
+        retry_delay = 2 # segundos de espera entre as tentativas
+        response = None
 
-        # for attempt in range(max_retries):
-        #     try:
-        #         # Envia a mensagem utilizando o chat.send_message
-        #         response = chat.send_message(user_message)
-        #         break # Se der certo, sai do loop imediatamente
-        #     except Exception as api_error:
-        #         if "503" in str(api_error) and attempt < max_retries - 1:
-        #             print(f"Aviso: API sobrecarregada (503). Tentativa {attempt + 1} falhou. Retentando em {retry_delay} segundos...")
-        #             time.sleep(retry_delay)
-        #         else:
-        #             # Re-lança a exceção se esgotar as tentativas ou for outro tipo de erro
-        #             raise api_error
+        for attempt in range(max_retries):
+            try:
+                # Envia a mensagem utilizando o chat.send_message
+                response = chat.send_message(user_message)
+                break # Se der certo, sai do loop imediatamente
+            except Exception as api_error:
+                if "503" in str(api_error) and attempt < max_retries - 1:
+                    print(f"Aviso: API sobrecarregada (503). Tentativa {attempt + 1} falhou. Retentando em {retry_delay} segundos...")
+                    time.sleep(retry_delay)
+                else:
+                    # Re-lança a exceção se esgotar as tentativas ou for outro tipo de erro
+                    raise api_error
 
         # Extrai a resposta textual
-        # ai_reply = response.text
-        # print(f"Resposta gerada pelo Gemini: {ai_reply}")
+        ai_reply = response.text
+        print(f"Resposta gerada pelo Gemini: {ai_reply}")
 
-        # Retorna a resposta estática (mock) para testar o TTS do Android sem depender da API
-        return {"reply": "Olá. A conexão de rede foi um sucesso absoluto e o meu sistema de voz está funcionando perfeitamente."}
+        # Retorna no formato JSON esperado pelo Android
+        return {"reply": ai_reply}
 
     except Exception as e:
         print(f"Erro ao processar a mensagem: {e}")
