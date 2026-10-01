@@ -25,7 +25,7 @@ async def chat_endpoint(message: str = Form(...)):
 
         for attempt in range(max_retries):
             try:
-                # Chama a API ultra rápida do Groq (Usando o modelo estável padrão)
+                # Chama a API ultra rápida do Groq (Usando um modelo garantido e ativo listado na sua conta)
                 chat_completion = client.chat.completions.create(
                     messages=[
                         {
@@ -37,7 +37,7 @@ async def chat_endpoint(message: str = Form(...)):
                             "content": user_message
                         }
                     ],
-                    model="llama3-8b-8192",
+                    model="allam-2-7b",
                     temperature=0.7,
                 )
                 response = chat_completion
