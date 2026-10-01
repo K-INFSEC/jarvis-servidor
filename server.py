@@ -65,8 +65,11 @@ async def chat_endpoint(message: str = Form(...)):
         return {"reply": ai_reply}
 
     except Exception as e:
-        print(f"Erro ao processar a mensagem: {e}")
-        raise HTTPException(status_code=500, detail="Erro interno ao processar a requisição com o Gemini.")
+        print(f"Erro detalhado ao processar a mensagem: {str(e)}")
+        import traceback
+        traceback.print_exc()
+        # Retorna o erro exato na resposta para podermos ver no Android/Curl o que quebrou
+        raise HTTPException(status_code=500, detail=f"Erro interno do Gemini: {str(e)}")
 
 if __name__ == "__main__":
     print("Iniciando o cérebro do Jarvis (Powered by Gemini) na porta 5000...")
